@@ -24,7 +24,7 @@ final class Request
     public static function fromGlobals(): self
     {
         $uri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
-        $path = parse_url($uri, PHP_URL_PATH) ?: '/';
+        $path = self::normalizePath(parse_url($uri, PHP_URL_PATH) ?: '/');
         $method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
         $rawBody = file_get_contents('php://input') ?: '';
 
@@ -36,6 +36,25 @@ final class Request
         }
 
         return new self($method, $path, $rawBody, $_GET, self::headersFromServer());
+    }
+
+    private static function normalizePath(string $path): string
+    {
+        $route = $_GET['route'] ?? $_GET['_route'] ?? null;
+        if (is_string($route) && $route !== '') {
+            return '/' . ltrim($route, '/');
+        }
+
+        $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+        if ($scriptName !== '' && str_starts_with($path, $scriptName)) {
+            $path = substr($path, strlen($scriptName)) ?: '/';
+        }
+
+        if (str_starts_with($path, '/index.php')) {
+            $path = substr($path, strlen('/index.php')) ?: '/';
+        }
+
+        return '/' . ltrim($path, '/');
     }
 
     /**

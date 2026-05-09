@@ -99,6 +99,24 @@ http://local.shuibeng.com:7888/api/health
 
 项目已包含根目录 `.htaccess` 和 `public/.htaccess`，用于把 `/api/*` 转发到 `public/index.php`。
 
+如果你的 MAMP 暂时无法启用 `.htaccess` 或 `mod_rewrite`，可以使用入口文件访问接口：
+
+```text
+http://local.shuibeng.com:7888/index.php/api/health
+```
+
+或者使用查询参数备用路由：
+
+```text
+http://local.shuibeng.com:7888/index.php?route=/api/health
+```
+
+如果项目不是直接指向 `public/`，而是通过目录访问，则把路径补全，例如：
+
+```text
+http://local.shuibeng.com:7888/shuiben/public/index.php/api/health
+```
+
 ## 推荐物模型属性
 
 如果腾讯云产品尚未建模，可以参考以下属性。最终名称以 IoT Explorer 控制台中的 identifier 为准：
