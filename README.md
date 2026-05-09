@@ -68,6 +68,37 @@ storage/pumps.json            本地泵设备档案存储
 
 5. 打开 `http://localhost:8080`，输入 API Token，登记泵设备的 `ProductId` 和 `DeviceName` 后即可操作。
 
+## 使用 MAMP / Apache 访问
+
+推荐把 MAMP 的站点根目录直接指向项目的 `public/` 目录：
+
+```text
+/path/to/shuiben/public
+```
+
+如果你的本地域名是 `local.shuibeng.com`，端口是 `7888`，健康检查地址应为：
+
+```text
+http://local.shuibeng.com:7888/api/health
+```
+
+如果访问 `/api/health` 返回 404，请依次确认：
+
+1. MAMP 的 Apache 已启用 `mod_rewrite`。
+2. 虚拟主机或 MAMP Document Root 指向 `public/`，或至少指向项目根目录。
+3. Apache 允许读取 `.htaccess`，虚拟主机配置里需要类似：
+
+   ```apache
+   <Directory "/path/to/shuiben">
+       AllowOverride All
+       Require all granted
+   </Directory>
+   ```
+
+4. 修改配置后重启 MAMP Apache。
+
+项目已包含根目录 `.htaccess` 和 `public/.htaccess`，用于把 `/api/*` 转发到 `public/index.php`。
+
 ## 推荐物模型属性
 
 如果腾讯云产品尚未建模，可以参考以下属性。最终名称以 IoT Explorer 控制台中的 identifier 为准：
